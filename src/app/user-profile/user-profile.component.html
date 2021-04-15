@@ -1,0 +1,134 @@
+
+
+<br><br><br><br><br>
+<br>
+<div class="main-content">
+
+  <!-- Page content -->
+  <div class="container-fluid mt--7">
+    <div class="row">
+      <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+        <div class="card card-profile shadow">
+          <div class="row justify-content-center">
+            <div class="col-lg-3 order-lg-2">
+              <div class="card-profile-image">
+                <a href="#">
+                  <img src="https://demos.creative-tim.com/argon-dashboard/assets/img/theme/team-4.jpg" class="rounded-circle">
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+            <div class="d-flex justify-content-between">
+              <a href="#" class="btn btn-sm btn-info mr-4">Connect</a>
+
+            </div>
+          </div>
+          <div class="card-body pt-0 pt-md-4">
+            <div class="row">
+              <div class="col">
+
+              </div>
+            </div>
+            <br><br>
+            <div class="text-center" *ngFor="let u of user">
+              <h3>
+                <span class="font-weight-light">{{u.name}}</span>
+              </h3>
+              <div class="h5 font-weight-300">
+                <i class="ni location_pin mr-2"></i>{{u.email}}
+              </div>
+              <div class="h5 mt-4">
+                <i class="ni business_briefcase-24 mr-2"></i>{{u.phone_number}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-8 order-xl-1">
+        <div class="card bg-secondary shadow">
+          <div class="card-header bg-white border-0">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h3 class="mb-0">My Account</h3>
+              </div>
+              <div class="col-4 text-right">
+                <button class="btn btn-sm btn-primary" (click)="changePassword()" [disabled]="((newPass.value) && ( !oldPass.value)) ||  (newPass.value != confirmNew.value)">Save Updates</button>
+                <button class="btn btn-sm redbtn" (click)="clear()">Clear</button>
+              </div>
+
+
+            </div>
+          </div>
+          <div class="card-body">
+            <form [formGroup]="userForm">
+              <h6 class="heading-small text-muted mb-4">My Informations</h6>
+              <div class="pl-lg-4" >
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group focused">
+                      <label class="form-control-label" for="input-username">Username</label>
+                      <input type="text" id="input-username" formControlName="name"
+                      class="form-control form-control-alternative" placeholder="Username" >
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="input-email">Email address</label>
+                      <input type="email" id="input-email" class="form-control form-control-alternative"
+                      formControlName="email" placeholder="jesse@example.com">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group focused">
+                      <label class="form-control-label" for="input-last-name">Mobile Phone</label>
+                      <input type="text" id="input-last-name" formControlName="phone_number"
+                       class="form-control form-control-alternative" placeholder="Last name" value="Jesse">
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </form>
+              <hr class="my-4">
+              <!-- Password -->
+            <form [formGroup]="passwordForm">
+
+              <h6 class="heading-small text-muted mb-4">Change Password</h6>
+              <div class="pl-lg-4">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group focused">
+                      <label class="form-control-label" for="input-address">Old Password</label>
+                      <input id="input-address" class="form-control form-control-alternative" placeholder="Old Password" type="password" formControlName="oldPass">
+                      <div *ngIf="isCorrect">Wrong Password</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group focused">
+                      <label class="form-control-label" for="input-city">New Password</label>
+                      <input type="password" id="input-city" class="form-control form-control-alternative" placeholder="New Password" formControlName="newPass">
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group focused">
+                      <label class="form-control-label" for="input-country">Confirm Password</label>
+                      <input type="password" id="input-country" class="form-control form-control-alternative" placeholder="Confirm Password"formControlName="confirmNew">
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

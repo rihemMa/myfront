@@ -1,0 +1,286 @@
+<h1 class="title_erp">Manage Users</h1>
+
+<!--Toolbar-->
+<p-toolbar
+  [style]="{
+    width: '70rem',
+    'margin-bottom': '2rem',
+    'margin-right': '2rem',
+    height: '4rem',
+    'background-color': '',
+    border: 'none'
+  }"
+  styleClass="p-mb-4"
+>
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      label="New"
+      icon="pi pi-plus"
+      (click)="addUserModal()"
+      class="p-button-success p-mr-2 p-button-rounded"
+    ></button>
+    <button
+      pButton
+      pRipple
+      style="color: white"
+      icon="pi pi-trash"
+      [disabled]="!selectedUsers || !selectedUsers.length"
+      class="p-button-rounded p-button-warning"
+      (click)="delete()"
+    ></button>
+  </ng-template>
+</p-toolbar>
+
+<!--Table-->
+<div class="card">
+<p-table
+  #dt
+  [value]="users"
+  [rows]="10"
+  [paginator]="true"
+  [globalFilterFields]="['name', 'age']"
+  [(selection)]="selectedUsers"
+  [rowHover]="true"
+  dataKey="id"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [showCurrentPageReport]="true"
+  styleClass="p-datatable-responsive-demo"
+>
+  <ng-template pTemplate="caption">
+    <div class="p-d-flex p-ai-center p-jc-between">
+      <h5 class="p-m-0 title_erp" style="font-size: 20px; "> Users List</h5>
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input pInputText type="text" class="brad" placeholder="Search..." />
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 3rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th pSortableColumn="name">
+        Name <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th pSortableColumn="name">
+        Email <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th pSortableColumn="name">
+        Role <p-sortIcon field="name"></p-sortIcon>
+      </th>
+
+
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-user>
+    <tr>
+      <td>
+        <p-tableCheckbox [value]="user"></p-tableCheckbox>
+      </td>
+      <td>{{ user.name }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.role.role_name }}</td>
+
+
+      <td>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-pencil"
+          class="p-button-rounded p-button-success p-mr-2"
+          (click)="getSelectedUser(user)"
+        ></button>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-info-circle"
+          class="p-button-rounded p-button-secondary p-mr-2"
+          (click)="showModalDialog1()"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="summary">
+    <div class="p-d-flex p-ai-center p-jc-between">
+      In total there are {{ users ? users.length : 0 }} users.
+    </div>
+  </ng-template>
+</p-table>
+</div>
+
+<!-- New popup-->
+<p-dialog
+  header="Add new User"
+  [(visible)]="displayModal3"
+  [modal]="true"
+  [style]="{ width: '450px' }"
+  [baseZIndex]="10000"
+  [draggable]="false"
+  [resizable]="true"
+  styleClass="p-fluid"
+>
+<img class="center" src="assets/img/add_person_user_icon_131752.ico" />
+<form [formGroup]="userForm" >
+  <div class="p-fluid">
+    <br />
+    <div class="brad p-field">
+        <span class="p-float-label" >
+          <input
+          id="name"
+          type="text"
+          class="brad"
+          pInputText
+          formControlName="name"/>
+          <label for="name">Name </label>
+        </span>
+      <div *ngIf="name.touched && name.invalid">
+        <small *ngIf="name.errors.required"class="text-danger">Name is required <br> </small>
+        <small  *ngIf="name.errors.pattern" class="text-danger">Invalid name <br></small>
+        <small *ngIf="name.errors.minlength" class="text-danger">Name must contain 4 characters at least<br></small>
+        <small *ngIf="name.errors.maxlength" class="text-danger">Name must contain max 20 characters</small>
+      </div>
+    </div>
+
+    <div class="p-field">
+      <span class="p-float-label" >
+      <input
+        id="Email"
+        type="text"
+        pInputText
+        class="brad"
+        formControlName="email"
+      />
+      <label for="Email">Email </label>
+      </span>
+      <div *ngIf="email.touched && email.invalid">
+        <small *ngIf="email.errors.required"class="text-danger">Email is required <br> </small>
+        <small  *ngIf="email.errors.pattern" class="text-danger">Invalid email <br></small>
+      </div>
+    </div>
+
+  </div>
+
+  <label for="role_id"> Role :</label>
+<select class="form-select" aria-label="Default select example" formControlName="role_id">
+    <option *ngFor="let role of roles" value="{{ role.id }}">{{ role.role_name }}</option>
+</select>
+<div *ngIf="role_id.touched && role_id.invalid">
+  <small *ngIf="role_id.errors.required"class="text-danger"> Role is required <br> </small>
+</div>
+
+</form>
+
+<ng-template pTemplate="footer">
+
+  <button type="button" (click)="displayModal3 = false" class="btn btn-outline-primary"style="border:none;">Cancel</button>
+  <button type="button" [disabled]="userForm.invalid"  (click)="addUser()" class="btn btn-outline-primary" style="border:none;">Save</button>
+</ng-template>
+
+
+</p-dialog>
+
+<!-- Update popup-->
+<p-dialog
+  header="Update User"
+  [(visible)]="displayModal"
+  [modal]="true"
+  [style]="{ width: '450px' }"
+  [baseZIndex]="10000"
+  [draggable]="false"
+  [resizable]="true"
+  styleClass="p-fluid"
+>
+<form [formGroup]="userForm" >
+  <div class="p-fluid">
+    <br />
+    <div class="brad p-field">
+
+        <span class="p-float-label" >
+          <input
+          id="name"
+          type="text"
+          class="brad"
+          pInputText
+          formControlName="name"/>
+          <label for="name">Name </label>
+        </span>
+      <div *ngIf="name.touched && name.invalid">
+        <small *ngIf="name.errors.required"class="text-danger">Name is required <br> </small>
+        <small  *ngIf="name.errors.pattern" class="text-danger">Invalid name <br></small>
+        <small *ngIf="name.errors.minlength" class="text-danger">Name must contain 4 characters at least<br></small>
+        <small *ngIf="name.errors.maxlength" class="text-danger">Name must contain max 20 characters</small>
+      </div>
+    </div>
+
+    <div class="p-field">
+      <span class="p-float-label" >
+      <input
+        id="Email"
+        type="text"
+        pInputText
+        class="brad"
+        formControlName="email"
+      />
+      <label for="Email">Email </label>
+      </span>
+      <div *ngIf="email.touched && email.invalid">
+        <small *ngIf="email.errors.required"class="text-danger">Email is required <br> </small>
+        <small  *ngIf="email.errors.pattern" class="text-danger">Invalid email <br></small>
+      </div>
+    </div>
+
+  </div>
+
+  <label for="role_id"> Role :</label>
+<select class="form-select" aria-label="Default select example" formControlName="role_id">
+    <option *ngFor="let role of roles" value="{{ role.id }}">{{ role.role_name }}</option>
+</select>
+<div *ngIf="role_id.touched && role_id.invalid">
+  <small *ngIf="role_id.errors.required"class="text-danger"> Role is required <br> </small>
+</div>
+
+</form>
+
+<ng-template pTemplate="footer">
+
+  <button type="button" (click)="displayModal3 = false" class="btn btn-outline-primary"style="border:none;">Cancel</button>
+  <button type="button" (click)="updateUser()" class="btn btn-outline-primary" [disabled]="userForm.invalid" style="border:none;">Save</button>
+</ng-template>
+
+
+</p-dialog>
+
+<!-- MoreInfo popup-->
+<p-dialog
+  header="More Info"
+  [(visible)]="displayModal1"
+  [modal]="true"
+  [style]="{ width: '650px' }"
+  [baseZIndex]="10000"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <img
+    class="center"
+    src="assets/img/cog_tools_configuration_settings_icon_131758.ico"
+  />
+  <br />
+<div>
+  <h4>Contact: </h4>
+</div>
+  <ng-template pTemplate="footer">
+    <p-button
+      icon="pi pi-check"
+      (click)="displayModal1 = false"
+      label="Ok"
+      styleClass="p-button-text"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+
+

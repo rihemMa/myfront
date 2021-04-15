@@ -1,0 +1,115 @@
+<h1 class="title_erp">Manage Bills</h1>
+
+<!--Toolbar-->
+ <p-toolbar
+ [style]="{
+    width: '70rem',
+    'margin-bottom': '2rem',
+    'margin-right': '2rem',
+    height: '4rem',
+    'background-color': '',
+    border: 'none'
+  }"
+  styleClass="p-mb-4"
+>
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      label="New"
+      icon="pi pi-plus"
+     (click)="nav()"
+      class="p-button-success p-mr-2 p-button-rounded"
+    ></button>
+    <button
+      pButton
+      pRipple
+      style="color: white"
+      icon="pi pi-trash"
+      [disabled]="!selectedBill || !selectedBill.length"
+      class="p-button-rounded p-button-warning"
+      (click)="deleteBill()"
+    ></button>
+  </ng-template>
+</p-toolbar>
+
+<!--Table-->
+<div class="card">
+  <p-table
+    #dt
+    [value]="bills"
+    [rows]="10"
+    [paginator]="true"
+    [(selection)]="selectedBill"
+    [globalFilterFields]="['name', 'age']"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
+    styleClass="p-datatable-responsive-demo"
+  >
+    <ng-template pTemplate="caption">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        <h5 class="p-m-0 title_erp"> Bills List</h5>
+        <select  [(ngModel)]="thisyear" class="form-select" aria-label="Default select example" style="width: fit-content;">
+          <option  *ngFor="let year of years">{{ year.year }}</option>
+
+        </select>
+
+
+
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" class="brad" placeholder="Search..." />
+        </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="name">
+          Bill Number <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="name">
+          Client <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="name">
+          Facturation Date <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-bill>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="bill"></p-tableCheckbox>
+        </td>
+         <td>{{ bill.billNum }}</td>
+         <td>{{ bill.client_name }}</td>
+         <td>{{ bill.DateFacturation | date: 'mediumDate' }}</td>
+          <td>
+
+          <button
+            pButton
+            pRipple
+            icon="pi pi-info-circle"
+            class="p-button-rounded p-button-secondary p-mr-2"
+
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        In total there are {{ bills ? bills.length : 0 }} bills.
+      </div>
+    </ng-template>
+  </p-table>
+  </div>
+
+
+
+
+

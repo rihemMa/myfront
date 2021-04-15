@@ -1,0 +1,186 @@
+<br> <br>
+<br> <br>
+<br> <br>
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+
+        <div class="row justify-content-center">
+          <div class="col-lg-3 order-lg-2">
+            <div class="card-profile-image">
+              <br>
+              <br>
+              <a >
+                <img src="{{generalLink}}{{path}}" alt="" class="rounded-circle">
+                <br>
+                <br><br>
+                <br><br>
+                <br><br>
+                <br> <input type="file" id="formFile" (change)="selectFile($event)">
+              </a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+<div class="col-xl-8 order-xl-1">
+  <div class="card bg-secondary shadow">
+    <div class="card-header bg-white border-0">
+      <div class="row align-items-center">
+        <div class="col-8">
+          <h3 class="mb-0">Company Profile</h3>
+        </div>
+        <div class="col-4 text-right">
+          <button (click)="updateCompany()" class="btn btn-sm btn-primary">Update</button>
+          <button (click)="clearCompanyInfo()" class="btn btn-sm btn-primary">Clear</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="companyForm">
+        <h6 class="heading-small text-muted mb-4">Company information</h6>
+        <div class="pl-lg-4">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group focused">
+                <label class="form-control-label" for="name">Name</label>
+                <input type="text" id="name" formControlName="name" class="form-control form-control-alternative" placeholder="CompanyName">
+                <div *ngIf="name.touched && name.invalid">
+                  <small *ngIf="name.errors.required"class="text-danger">Name is required <br> </small>
+                  <small  *ngIf="name.errors.pattern" class="text-danger">Invalid name <br></small>
+                  <small *ngIf="name.errors.minlength" class="text-danger">Name must contain 4 characters at least<br></small>
+                  <small *ngIf="name.errors.maxlength" class="text-danger">Name must contain max 20 characters</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="email">Email address</label>
+                <input type="email" id="email" class="form-control form-control-alternative" placeholder="rihem@example.com" formControlName="email">
+                <div *ngIf="email.touched && email.invalid">
+                  <small *ngIf="email.errors.required" class="text-danger">email is required<br> </small>
+                  <small *ngIf="email.errors.email" class="text-danger">Invalid email<br> </small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group focused">
+                <label class="form-control-label" for="phone_number">Phone</label>
+                <input type="text" formControlName="phone_number" id="phone_number" class="form-control form-control-alternative" placeholder="First name" value="Lucky">
+                <div *ngIf="phone_number.touched && phone_number.invalid">
+                  <small *ngIf="phone_number.errors.required" class="text-danger">Phone is required<br> </small>
+                  <small *ngIf="phone_number.errors.pattern" class="text-danger">Invalid Phone<br> </small>
+                  <small *ngIf="phone_number.errors.minlength" class="text-danger">Phone must contain min 8 digits<br> </small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group focused">
+                <label class="form-control-label" for="mat_fiscal">tax registration number</label>
+                <input id="mat_fiscal" formControlName="mat_fiscal" class="form-control form-control-alternative" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
+                <div *ngIf="mat_fiscal.touched && mat_fiscal.invalid">
+                  <small *ngIf="mat_fiscal.errors.required" class="text-danger">Tax identification number is required<br> </small>
+                  <small *ngIf="mat_fiscal.errors.minlength" class="text-danger">Tax identification number must contain min 7 digits<br> </small>
+                  <small *ngIf="mat_fiscal.errors.pattern" class="text-danger">Invalid Tax identification number <br> </small>
+                </div>
+               </div>
+
+            </div>
+          </div>
+        </div>
+        <hr class="my-4">
+        <!-- Address -->
+        <h6 class="heading-small text-muted mb-4">Contact information</h6>
+        <div class="pl-lg-4">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group focused">
+                <label class="form-control-label" for="local">Address</label>
+                <input type="text" id="local" formControlName="local" class="form-control form-control-alternative" placeholder="Last name" value="Jesse">
+                <div *ngIf="local.touched && local.invalid">
+                  <small *ngIf="local.errors.required" class="text-danger">local is required<br> </small>
+                  <small *ngIf="local.errors.pattern" class="text-danger">Invalid Local <br> </small>
+                  <small *ngIf="local.errors.minlength" class="text-danger">local must contain min 8 digits<br> </small>
+                </div></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="form-group focused">
+                <label class="form-control-label" for="bank">Bank</label>
+                <input type="text" id="bank" formControlName="bank" class="form-control form-control-alternative" placeholder="City" value="New York">
+                <div *ngIf="bank.touched && bank.invalid">
+                  <small *ngIf="bank.errors.required" class="text-danger">bank is required<br> </small>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-lg-4">
+              <div class="form-group focused">
+                <label class="form-control-label" for="tva">VAT rate</label>
+                <input type="text" id="tva"  formControlName="tva"  class="form-control form-control-alternative" placeholder="Country" value="United States">
+                <div *ngIf="tva.touched && tva.invalid">
+                  <small *ngIf="tva.errors.required" class="text-danger">VAT rate identification number is required<br> </small>
+                  <small *ngIf="tva.errors.pattern" class="text-danger">Invalid VAT rate identification number <br> </small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="form-group">
+                <label class="form-control-label" for="tax">Tax Stamp</label>
+                <input type="number" id="tax" formControlName="tax" class="form-control form-control-alternative" placeholder="Postal code">
+                <div *ngIf="tax.touched && tax.invalid">
+                  <small *ngIf="tax.errors.required" class="text-danger">Tax Stamp is required<br> </small>
+                  <small *ngIf="tva.errors.pattern" class="text-danger">Invalid VAT rate identification number <br> </small>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group focused">
+                  <label class="form-control-label" for="domaine">Domaine</label>
+                  <input type="text" id="domaine" formControlName="domaine" class="form-control form-control-alternative" placeholder="Last name" value="Jesse">
+                  <div *ngIf="domaine.touched && domaine.invalid">
+                    <small *ngIf="domaine.errors.required" class="text-danger">Domaine is required<br> </small>
+                    <small *ngIf="domaine.errors.minlength" class="text-danger">Domaine must contain min 7 digits<br> </small>
+                    <small *ngIf="domaine.errors.pattern" class="text-danger">Invalid Domaine <br> </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <hr class="my-4">
+
+        <h6 class="heading-small text-muted mb-4">Users Emails List</h6>
+        <div class="pl-lg-4">
+            <div class="row">
+              <table class="table">
+                <thead>
+                  <tr >
+                    <th scope="col">#</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">To be sent for</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of users">
+                    <th scope="row">{{user.id}}</th>
+                    <td > {{user.name}}  </td>
+                    <td >{{user.email}}</td>
+                    <td ><input class="form-check-input" type="checkbox" value="" id="defaultCheck1"></td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,239 @@
+<h1 class="title_erp">Manage Roles</h1>
+
+<!--Toolbar-->
+<p-toolbar
+  [style]="{
+    width: '70rem',
+    'margin-bottom': '2rem',
+    'margin-right': '2rem',
+    height: '4rem',
+    'background-color': '',
+    border: 'none'
+  }"
+  styleClass="p-mb-4"
+>
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      label="New"
+      icon="pi pi-plus"
+      (click)="showModalDialog3()"
+      class="p-button-success p-mr-2 p-button-rounded"
+    ></button>
+    <button
+      pButton
+      pRipple
+      style="color: white"
+      icon="pi pi-trash"
+      [disabled]="!selectedRoles || !selectedRoles.length"
+      class="p-button-rounded p-button-warning"
+      (click)="deleteRole()"
+    ></button>
+  </ng-template>
+</p-toolbar>
+
+<!--Table-->
+<p-table
+  #dt
+  [value]="roles"
+  [rows]="10"
+  [paginator]="true"
+  [globalFilterFields]="['name', 'age']"
+  [(selection)]="selectedRoles"
+  [rowHover]="true"
+  dataKey="id"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [showCurrentPageReport]="true"
+  styleClass="p-datatable-responsive-demo"
+>
+  <ng-template pTemplate="caption">
+    <div class="p-d-flex p-ai-center p-jc-between">
+      <h5 class="p-m-0 title_erp">Manage Roles</h5>
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input pInputText type="text" class="brad" placeholder="Search..." />
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 3rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th pSortableColumn="name">
+        Name <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      
+   
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-role>
+    <tr>
+      <td>
+        <p-tableCheckbox [value]="role"></p-tableCheckbox>
+      </td>
+      <td>{{ role.role_name }}</td>
+      <td>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-pencil"
+          class="p-button-rounded p-button-success p-mr-2"
+          (click)="getSelectedRole(role)"
+          
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="summary">
+    <div class="p-d-flex p-ai-center p-jc-between">
+      In total there are {{ roles ? roles.length : 0 }} Roles.
+    </div>
+  </ng-template>
+</p-table>
+
+<!-- New popup-->
+<p-dialog
+  header="Add new Role"
+  [(visible)]="displayModal3"
+  [modal]="true"
+  [style]="{ width: '450px' }"
+  [baseZIndex]="10000"
+  [draggable]="true"
+  [resizable]="true"
+  styleClass="p-fluid"
+>
+  <div class="p-fluid">
+    <img class="center" src="assets/img/add_person_user_icon_131752.ico" />
+    <br />
+    <div class="brad p-field">
+      <label for="firstname1"></label>
+      <input
+        id="firstname1"
+        type="text"
+        placeholder="Name"
+        class="brad"
+        pInputText
+        [formControl]="role"
+        />
+        
+      <div *ngIf="role.invalid && (role.touched || role.dirty)">
+        <small style="color : red "> name is required</small>
+      </div>
+    </div>
+
+ 
+  <div class="p-field"  >  
+      <ul *ngFor="let space of spaces" >
+             <li>
+               <input type="checkbox" (change)="selectSpace(space.id,$event)" id="{{space.id}}"> 
+               {{ space.space_name}}
+              </li>
+             <ul *ngFor="let action of actions" >
+               <li> <input type="checkbox" name="priv" id="{{space.id}}{{action.id}}" class="checkBox" 
+                (change)="selectAction(space.id,action.id,$event)">
+                 {{ action.action_name}}
+               </li>
+
+             </ul>
+      </ul>
+ 
+    </div>
+<p class="transp">...</p>
+<p class="transp">...</p>
+<p class="transp">...</p>
+<p class="transp">...</p>
+<p class="transp">...</p>
+
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      icon="pi pi-times"
+      (click)="hideAddModal()"
+      label="Cancel"
+      styleClass="p-button-text"
+    ></p-button>
+    <p-button
+    (click)="addRole()"
+      icon="pi pi-check"
+      label="Yes"
+      styleClass="p-button-text"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+<!-- Update popup-->
+<p-dialog
+  header="Update Role"
+  [(visible)]="displayModal"
+  [modal]="true"
+  [style]="{ width: '450px' }"
+  [baseZIndex]="10000"
+  [draggable]="true"
+  [resizable]="true"
+  styleClass="p-fluid"
+>
+  <div class="p-fluid">
+    <img class="center" src="assets/img/add_person_user_icon_131752.ico" />
+    <br />
+    <div class="brad p-field">
+      <label for="firstname1"></label>
+      <input
+        id="firstname1"
+        type="text"
+        placeholder="Name"
+        class="brad"
+        pInputText
+        [(ngModel)]="role_name"
+      />
+    </div>
+
+ 
+  <div class="p-field"  >
+      
+   
+      <ul *ngFor="let space of spaces" >
+             <li>
+               <input type="checkbox"(change)="selectSpace(space.id,$event)" id="{{space.id}}"> 
+               {{ space.space_name}}
+              </li>
+             <ul *ngFor="let action of actions" >
+               <li><input type="checkbox" name="priv" (change)="selectAction(space.id,action.id,$event)" 
+                          id="{{space.id}}{{action.id}}" class="checkBox">
+                 {{ action.action_name}}
+               </li>
+
+             </ul>
+      </ul>
+ 
+    </div>
+<p class="transp">...</p>
+<p class="transp">...</p>
+<p class="transp">...</p>
+<p class="transp">...</p>
+<p class="transp">...</p>
+
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      icon="pi pi-times"
+      (click)="hidemodal3()"
+      label="Cancel"
+      styleClass="p-button-text"
+    ></p-button>
+    <p-button
+    (click)="updateRole()"
+      icon="pi pi-check"
+      label="Yes"
+      styleClass="p-button-text"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+
+
+
+

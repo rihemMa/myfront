@@ -1,0 +1,222 @@
+<div class="invoice-box">
+  <table cellpadding="0" cellspacing="0">
+    <tr class="top">
+      <td colspan="2">
+        <table>
+          <tr>
+            <td class="title">
+              <div>Facture</div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+  <!--Facture info-->
+    <table class="balance">
+      <div *ngFor="let item of billArray"  >
+        <tr>
+          <th class="f"><span >Facture #</span></th>
+          <td class="f">
+            <input class="inputStyle"  [(ngModel)]="item.billNum"  type="text" />
+          </td>
+        </tr>
+        <tr>
+          <th class="f"><span >Date</span></th>
+          <td class="f">
+            <input class="inputStyle" [(ngModel)]="item.DateFacturation"  type="text" /></td>
+        </tr>
+      </div>
+      </table>
+
+  <!--company info-->
+    <tr class="information">
+      <td colspan="2">
+        <table>
+          <tr>
+            <td>
+              <div *ngFor="let c of company">
+                <div style="font-size: large ; font-family:fantasy ; ">
+                  Entreprise {{c.name}}
+                </div>
+
+              <br />
+              <div class="font">
+                <i class="pi pi-envelope"></i>  {{c.email}}
+              </div>
+              <br />
+              <div class="font">
+                <i class="pi pi-phone"></i> (+216) {{c.phone_number}}
+              </div>
+              <br />
+              <div class="font">
+                <i class="pi pi-flag"></i>  {{c.local}}
+              </div>
+
+              <br />
+            </div>
+
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr class="information">
+      <td colspan="2">
+        <table>
+          <tr>
+            <td>
+             <br>
+             <br>
+             <br>
+            </td>
+
+        <!--client info-->
+            <td>
+                <select class="brad" (change)="getClientInfo($event)" [(ngModel)]="clientId">
+                  <option *ngFor="let c of client" value="{{c.id}}" >
+                      {{c.client_name}}
+                  </option>
+                </select>
+                <br>
+                <br>
+
+
+                <div class="box" *ngIf="clientInfo">
+                <input class="inputStyle"  type="text" [(ngModel)]="clientInfo.client_name">
+                <input class="inputStyle" type="text" [(ngModel)]="clientInfo.email">
+                <input class="inputStyle" type="text" [(ngModel)]="clientInfo.address">
+                <input class="inputStyle" type="text" [(ngModel)]="clientInfo.matFisc">
+                </div>
+
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+
+
+    <!--Items table-->
+      <table class="table">
+          <thead>
+              <tr>
+                <th>#</th>
+              <th>Désignation</th>
+              <th>Quantité</th>
+              <th>Prix Unitaire HT</th>
+              <th>Prix Total HT</th>
+              </tr>
+          </thead>
+          <tbody>
+               <tr *ngFor="let item of itemsArray; let i = index;" >
+                <td >
+                  <i class="fa fa-trash "></i>
+                </td>
+
+                  <td>
+                    <input [(ngModel)]="item.designation"  class="form-control" type="text" />
+                  </td>
+                  <div (keyup)="caclucTotalOfOneItem(item,i)">
+                  <td>
+                    <input [(ngModel)]="item.quantity" class="form-control" type="text" />
+                  </td>
+
+                  <td>
+                    <input [(ngModel)]="item.u_price" class="form-control" type="text"/>
+                  </td>
+                </div>
+
+                  <td>
+                    <input  readonly
+                     [(ngModel)]="item.total_price" class="form-control" type="text"  />
+                  </td>
+
+
+
+
+              </tr>
+              <tr>
+                <td >
+                  <i class="fa fa-plus "></i>
+                </td>
+              </tr>
+          </tbody>
+      </table>
+
+<br>
+<br>
+
+  <!--TVA table-->
+<table class="balance">
+<div *ngFor="let item of billArray"  >
+  <tr >
+    <th class="f"><span >Montant HT</span></th>
+    <td class="f">
+      <input class="inputStyle" readonly [(ngModel)]="item.ht_price"  type="text" />
+    </td>
+  </tr>
+  <tr>
+    <th class="f"><span >Taux TVA</span></th>
+    <td class="f">
+      <input class="inputStyle" [(ngModel)]="item.rate_tva"  type="text" /></td>
+  </tr>
+  <tr>
+    <th class="f"> <span >Montant TVA</span></th>
+    <td class="f"><input class="inputStyle" [(ngModel)]="item.price_tva" readonly type="text" /></td>
+  </tr>
+  <tr>
+    <th class="f"><span >Timbre Fiscal </span></th>
+    <td class="f"><input class="inputStyle" [(ngModel)]="item.fiscal_timber"  type="text" /></td>
+  </tr>
+  <tr>
+    <th class="f"><span  style="font-size: 20px;">Montant TTC </span></th>
+    <td class="f"><input class="inputStyle" [(ngModel)]="item.total_ttc"  type="text" /></td>
+  </tr>
+</div>
+
+</table>
+
+  </table>
+  <br>
+  <br>
+
+  <!--company info-->
+  <tr class="information">
+    <td colspan="2">
+      <table>
+        <tr>
+          <td>
+            <div  class="footerFont" *ngFor="let c of company">
+              {{c.domaine}} - {{c.email}}
+             <br>
+              RIB: {{c.bank}}
+              -
+            TVA:{{c.mat_fiscal}}
+
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <div>
+    <button type="button"  [routerLink]="['/bills']" class="btn btn-outline-primary" style="border:none;">Cancel</button>
+    <button type="button"
+    (click)="saveBill()"
+    class="btn btn-outline-primary" style="border:none;">Save</button>
+  </div>
+</div>
+<br>
+<br>
+<div class="col-md-4">
+  <button type="button" class="btn btn-secondary btn-lg btn-block"
+      >Download Invoice</button>
+  <button type="button" class="btn btn-secondary btn-lg btn-block"
+      >Print
+      Invoice</button>
+  <button type="submit" class="btn btn-secondary btn-lg btn-block"
+     >Open
+      Invoice</button>
+</div>

@@ -1,0 +1,437 @@
+<div class="card">
+
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2    p-button-rounded" (click)="showModalDialog3()"></button>
+            <button pButton (click)="deleteClients()" pRipple label="Delete" icon="pi pi-trash" class="p-button-danger p-mr-2 p-button-rounded"[disabled]="!selectedClients || !selectedClients.length"></button>
+
+        </ng-template>
+
+        <ng-template pTemplate="right">
+
+                       <button pButton pRipple label="Export" icon="pi pi-file-pdf"  style="background-color: #34495E;border: none;" [disabled]="!selectedClients || !selectedClients.length"></button>
+        </ng-template>
+    </p-toolbar>
+
+
+
+    <p-table
+    #dt
+    [value]="clients"
+    [rows]="10"
+    [paginator]="true"
+    [globalFilterFields]="['name', 'age']"
+    [(selection)]="selectedClients"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
+    styleClass="p-datatable-responsive-demo"
+  >
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th style="width: 3rem"></th>
+                <th pSortableColumn="name"> Client Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="email"> Email <p-sortIcon field="email"></p-sortIcon></th>
+                <th pSortableColumn="matFisc"> MatFisc <p-sortIcon field="matFisc"></p-sortIcon></th>
+                <th pSortableColumn="address"> Address <p-sortIcon field="address"></p-sortIcon></th>
+                <th pSortableColumn="fax"> Fax <p-sortIcon field="fax"></p-sortIcon></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-client let-expanded="expanded">
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="client"></p-tableCheckbox>
+                </td>
+                <td>
+                    <button type="button" pButton pRipple [pRowToggler]="client"
+                    class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                </td>
+
+                <td>{{client.client_name}}</td>
+                <td>{{client.email}}</td>
+                <td>{{client.matFisc}}</td>
+                <td>{{client.address}}</td>
+                <td>{{client.fax}}</td>
+
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="getSelectedClient(client)"></button>
+                    <button pButton pRipple icon="pi pi-info-circle" class="p-button-rounded p-button-secondary p-mr-2"></button>
+
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-client>
+            <tr>
+                <td colspan="8">
+                    <div class="p-p-3">
+                      <p-table
+                      #dt
+                      [value]="client.contact"
+                      [rowHover]="true"
+                      dataKey="id"
+                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                      [showCurrentPageReport]="true"
+                      styleClass="p-datatable-responsive-demo"
+                    >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Description</th>
+
+
+                        <th style="width:8rem"><button pButton pRipple type="button" icon="pi pi-plus"
+                          class="p-button-rounded p-button-text" (click)="addContactsModal(client.id)"></button></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-contact let-editing="editing" let-ri="rowIndex">
+                            <tr [pEditableRow]="contact">
+
+                                <td pEditableColumn>
+                                  <p-cellEditor>
+                                        <ng-template pTemplate="input">
+                                            <input pInputText type="text" [(ngModel)]="contact.contact_name" required>
+                                        </ng-template>
+                                        <ng-template pTemplate="output">
+                                            {{contact.contact_name}}
+                                        </ng-template>
+                                    </p-cellEditor>
+                                </td>
+                                <td pEditableColumn>
+                                    <p-cellEditor>
+                                        <ng-template pTemplate="input">
+                                            <input pInputText type="text" [(ngModel)]="contact.position" >
+                                        </ng-template>
+                                        <ng-template pTemplate="output">
+                                            {{contact.position}}
+                                        </ng-template>
+                                    </p-cellEditor>
+                                </td>
+                                <td pEditableColumn>
+                                  <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="contact.contact_phone" >
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{contact.contact_phone}}
+                                    </ng-template>
+                                </p-cellEditor>
+                                </td>
+                                <td pEditableColumn>
+
+                                  <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="contact.contact_email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{contact.contact_email}}
+                                    </ng-template>
+                                  </p-cellEditor>
+                              </td>
+                              <td pEditableColumn>
+
+                                <p-cellEditor>
+                                  <ng-template pTemplate="input">
+                                      <input pInputText type="text" [(ngModel)]="contact.description" >
+                                  </ng-template>
+                                  <ng-template pTemplate="output">
+                                      {{contact.description}}
+                                  </ng-template>
+                                </p-cellEditor>
+                            </td>
+
+                                <td style="text-align:center">
+                                    <button  pButton pRipple type="button"  *ngIf="active(contact)"pSaveEditableRow icon="pi pi-check" (click)="updateContact(contact)" class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                                    <button  pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="deleteContact(contact.id)" class="p-button-rounded p-button-text p-button-danger"></button>
+                                </td>
+
+                            </tr>
+                        </ng-template>
+
+
+
+                    </p-table>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+</div>
+
+<!-- Modal for  editing-->
+<p-dialog header="Update Client" [(visible)]="displayModal" [modal]="true"[style]="{ width: '120vh','height':'80vh  ' }"[baseZIndex]="10000"
+  [draggable]="false"  [resizable]="false" styleClass="p-fluid">
+  <div class="p-fluid">
+    <img class="center" src="assets/img/add_person_user_icon_131752.ico" />
+    <br />
+    <form [formGroup]="clientForm" >
+      <div class="p-grid p-fluid">
+<div class="p-field p-col-6 " >
+   <span class="p-float-label" >
+    <input id="client_name" type="text" pInputText class="brad"  formControlName="client_name" name="client_name">
+    <div *ngIf="client_name.touched && client_name.invalid">
+      <small *ngIf="client_name.errors.required"class="text-danger">Name is required <br> </small>
+      <small  *ngIf="client_name.errors.pattern" class="text-danger">Invalid name <br></small>
+      <small *ngIf="client_name.errors.minlength" class="text-danger">Name must contain 4 characters at least<br></small>
+      <small *ngIf="client_name.errors.maxlength" class="text-danger">Name must contain max 20 characters</small>
+    </div>
+    <label for="name">Client Name</label>
+  </span>
+</div>
+
+
+<div class="p-field p-col-6 ">
+  <span class="p-float-label" >
+    <input id="email" type="text" pInputText class="brad" formControlName="email">
+    <div *ngIf="email.touched && email.invalid">
+      <small *ngIf="email.errors.required" class="text-danger">email is required<br> </small>
+      <small *ngIf="email.errors.email" class="text-danger">Invalid email<br> </small>
+    </div>
+    <label for="email"> Email</label>
+  </span>
+      </div>
+    </div>
+
+
+    <div class="p-grid p-fluid">
+       <div class="p-field p-col-6">
+        <span class="p-float-label" >
+          <input id="phone" type="text" pInputText class="brad" formControlName="phone">
+          <label for="phone">Phone</label>
+          <div *ngIf="phone.touched && phone.invalid">
+            <small *ngIf="phone.errors.required" class="text-danger">Phone is required<br> </small>
+            <small *ngIf="phone.errors.pattern" class="text-danger">Invalid Phone<br> </small>
+            <small *ngIf="phone.errors.minlength" class="text-danger">Phone must contain min 8 digits<br> </small>
+          </div>
+        </span>
+  </div>
+
+
+      <div class="p-field p-col-6 " >
+        <span class="p-float-label" >
+          <input id="fax" type="text" pInputText class="brad" formControlName="fax">
+          <div *ngIf="fax.touched && fax.invalid">
+            <small *ngIf="fax.errors.required" class="text-danger">Fax is required<br> </small>
+            <small *ngIf="fax.errors.pattern" class="text-danger">Invalid Fax <br> </small>
+            <small *ngIf="fax.errors.minlength" class="text-danger">Fax must contain min 8 digits<br> </small>
+          </div>
+          <label for="fax">Fax</label>
+        </span>
+        </div>
+    </div>
+
+    <div class="p-grid p-fluid">
+      <div class="p-field p-col-6 ">
+        <span class="p-float-label" >
+          <input id="matFisc" type="text" pInputText class="brad"  formControlName="matFisc">
+          <div *ngIf="matFisc.touched && matFisc.invalid">
+            <small *ngIf="matFisc.errors.required" class="text-danger">matFisc is required<br> </small>
+            <small *ngIf="matFisc.errors.minlength" class="text-danger">matFisc must contain min 7 digits<br> </small>
+            <small *ngIf="matFisc.errors.pattern" class="text-danger">Invalid matFisc <br> </small>
+          </div>
+          <label for="matFisc">MatFisc</label>
+        </span>
+            </div>
+    <div class="p-field p-col-6">
+          <span class="p-float-label" >
+            <input id="address" type="text" pInputText class="brad" formControlName="address">
+            <div *ngIf="address.touched && address.invalid">
+              <small *ngIf="address.errors.required" class="text-danger">address is required<br> </small>
+            </div>
+            <label for="address">Address</label>
+          </span>
+    </div>
+            </div>
+    </form>
+
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-times" (click)="displayModal = false" label="Cancel" styleClass="p-button-text" ></p-button>
+    <p-button icon="pi pi-check" (click)="updateUser()" label="Save" styleClass="p-button-text" ></p-button>
+</ng-template>
+
+</p-dialog>
+
+<!-- Modal More info-->
+<p-dialog header="More Info" [(visible)]="displayModal1" [modal]="true" [style]="{ width: '650px' }" [baseZIndex]="10000"[draggable]="true"[resizable]="true">
+    <img class="center"  src="assets/img/cog_tools_configuration_settings_icon_131758.ico"/>
+    <br />
+
+    <ng-template pTemplate="footer">
+      <p-button icon="pi pi-check"  (click)="displayModal1 = false" label="Ok" styleClass="p-button-text"></p-button>
+    </ng-template>
+  </p-dialog>
+
+<!-- Modal add new Client-->
+<p-dialog header="Add new Client" [(visible)]="addNewClientModal" [modal]="true"[style]="{ width: '150vh','height':'100vh' }"[baseZIndex]="10000"
+  [draggable]="false"  [resizable]="false" styleClass="p-fluid">
+  <div class="p-fluid">
+    <img class="center" src="assets/img/add_person_user_icon_131752.ico" />
+    <br />
+
+    <form [formGroup]="clientForm" >
+      <div class="p-grid p-fluid">
+<div class="p-field p-col-6 " >
+   <span class="p-float-label" >
+    <input id="client_name" type="text" pInputText class="brad" formControlName="client_name" name="client_name">
+    <div *ngIf="client_name.touched && client_name.invalid">
+      <small *ngIf="client_name.errors.required"class="text-danger">Name is required <br> </small>
+      <small  *ngIf="client_name.errors.pattern" class="text-danger">Invalid name <br></small>
+      <small *ngIf="client_name.errors.minlength" class="text-danger">Name must contain 4 characters at least<br></small>
+      <small *ngIf="client_name.errors.maxlength" class="text-danger">Name must contain max 20 characters</small>
+    </div>
+    <label for="name">Client Name</label>
+  </span>
+</div>
+
+
+<div class="p-field p-col-6 ">
+  <span class="p-float-label" >
+    <input id="email" type="text" pInputText class="brad" formControlName="email">
+    <div *ngIf="email.touched && email.invalid">
+      <small *ngIf="email.errors.required" class="text-danger">email is required<br> </small>
+      <small *ngIf="email.errors.email" class="text-danger">Invalid email<br> </small>
+    </div>
+    <label for="email"> Email</label>
+  </span>
+      </div>
+    </div>
+
+
+    <div class="p-grid p-fluid">
+       <div class="p-field p-col-6">
+        <span class="p-float-label" >
+          <input id="phone" type="text" pInputText class="brad" formControlName="phone">
+          <label for="phone">Phone</label>
+          <div *ngIf="phone.touched && phone.invalid">
+            <small *ngIf="phone.errors.required" class="text-danger">Phone is required<br> </small>
+            <small *ngIf="phone.errors.pattern" class="text-danger">Invalid Phone<br> </small>
+            <small *ngIf="phone.errors.minlength" class="text-danger">Phone must contain min 8 digits<br> </small>
+          </div>
+        </span>
+  </div>
+
+
+      <div class="p-field p-col-6 " >
+        <span class="p-float-label" >
+          <input id="fax" type="text" pInputText class="brad" formControlName="fax">
+          <div *ngIf="fax.touched && fax.invalid">
+            <small *ngIf="fax.errors.required" class="text-danger">Fax is required<br> </small>
+            <small *ngIf="fax.errors.pattern" class="text-danger">Invalid Fax <br> </small>
+            <small *ngIf="fax.errors.minlength" class="text-danger">Fax must contain min 8 digits<br> </small>
+          </div>
+          <label for="fax">Fax</label>
+        </span>
+        </div>
+    </div>
+
+    <div class="p-grid p-fluid">
+      <div class="p-field p-col-6 ">
+        <span class="p-float-label" >
+          <input id="matFisc" type="text" pInputText class="brad"  formControlName="matFisc">
+          <div *ngIf="matFisc.touched && matFisc.invalid">
+            <small *ngIf="matFisc.errors.required" class="text-danger">matFisc is required<br> </small>
+            <small *ngIf="matFisc.errors.minlength" class="text-danger">matFisc must contain min 7 digits<br> </small>
+            <small *ngIf="matFisc.errors.pattern" class="text-danger">Invalid matFisc <br> </small>
+          </div>
+          <label for="matFisc">MatFisc</label>
+        </span>
+            </div>
+    <div class="p-field p-col-6">
+          <span class="p-float-label" >
+            <input id="address" type="text" pInputText class="brad" formControlName="address">
+            <label for="address">Address</label>
+            <div *ngIf="address.touched && address.invalid">
+              <small *ngIf="address.errors.required" class="text-danger">address is required<br> </small>
+            </div>
+          </span>
+    </div>
+            </div>
+    </form>
+  </div>
+  <ng-template pTemplate="footer">
+
+      <button type="button"(click)="addNewClientModal = false" class="btn btn-outline-primary"style="border:none;">Cancel</button>
+      <button type="button"(click)="addClient()"class="btn btn-outline-primary" [disabled]="clientForm.invalid"style="border:none;">Save</button>
+  </ng-template>
+</p-dialog>
+
+<!--Modal for ADD Contact-->
+<p-dialog header="Add  Contact" [(visible)]="addContactModal" [modal]="true"[style]="{ width: '150vh','height':'100vh' }"[baseZIndex]="10000"
+  [draggable]="false"  [resizable]="false" styleClass="p-fluid">
+  <div class="p-fluid">
+    <img class="center" src="assets/img/add_person_user_icon_131752.ico" />
+    <br />
+
+    <form [formGroup]="contactForm" >
+
+      <div class="p-grid p-fluid">
+              <div class="p-field p-col-6 " >
+                <span class="p-float-label" >
+                  <input id="contact_name" type="text" pInputText class="brad" formControlName="contact_name">
+                  <div *ngIf="contact_name.touched && contact_name.invalid">
+                    <small *ngIf="contact_name.errors.required"class="text-danger">Name is required <br> </small>
+                    <small  *ngIf="contact_name.errors.pattern" class="text-danger">Invalid name <br></small>
+                    <small *ngIf="contact_name.errors.minlength" class="text-danger">Name must contain 4 characters at least<br></small>
+                    <small *ngIf="contact_name.errors.maxlength" class="text-danger">Name must contain max 20 characters</small>
+                  </div>
+                  <label for="contact_name">Contact Name</label>
+                </span>
+              </div>
+
+              <div class="p-field p-col-6 " >
+                <span class="p-float-label" >
+                  <input id="psition" type="text" pInputText class="brad" formControlName="position">
+                  <label for="psition">Position</label>
+                </span>
+         </div>
+      </div>
+
+
+    <div class="p-grid p-fluid">
+       <div class="p-field p-col-6">
+        <span class="p-float-label" >
+          <input id="contact_phone" type="text" pInputText class="brad" formControlName="contact_phone">
+          <label for="contact_phone">Phone</label>
+        </span>
+  </div>
+        <div class="p-field p-col-6 ">
+
+                  <span class="p-float-label" >
+                    <input id="contact_email" type="text" pInputText class="brad" formControlName="contact_email"
+                    >
+                    <label for="contact_email"> Email</label>
+                  </span>
+        </div>
+  </div>
+
+    <div class="p-grid p-fluid">
+      <div class="p-field p-col-6">
+
+      <span class="p-float-label" >
+        <textarea rows="5" cols="30" pInputTextarea formControlName="description"></textarea>
+        <label for="description"> Description</label>
+      </span>
+      </div>
+    </div>
+
+
+
+
+
+    </form>
+  </div>
+  <ng-template pTemplate="footer">
+    <button type="button"(click)="addContactModal = false" class="btn btn-outline-primary"style="border:none;">Cancel</button>
+    <button type="button"(click)="addContact()"class="btn btn-outline-primary" [disabled]="contactForm.invalid"style="border:none;">Save</button>
+</ng-template>
+</p-dialog>

@@ -1,0 +1,290 @@
+<h1 class="title_erp">Manage Projects</h1>
+
+<!--Toolbar-->
+<p-toolbar
+  [style]="{
+    width: '70rem',
+    'margin-bottom': '2rem',
+    'margin-right': '2rem',
+    height: '4rem',
+    'background-color': '',
+    border: 'none'
+  }"
+  styleClass="p-mb-4"
+>
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      label="New"
+      icon="pi pi-plus"
+      (click)="showAddProjectModal()"
+      class="p-button-success p-mr-2 p-button-rounded"
+    ></button>
+    <button
+      pButton
+      pRipple
+      style="color: white"
+      icon="pi pi-trash"
+      [disabled]="!selectedProjects || !selectedProjects.length"
+      class="p-button-rounded p-button-warning"
+      (click)="deleteProject()"
+    ></button>
+  </ng-template>
+</p-toolbar>
+
+<!--Table-->
+<div class="card">
+
+  <p-table
+  #dt
+  [value]="projects"
+  [rows]="10"
+  [paginator]="true"
+  [globalFilterFields]="['name', 'age']"
+  [(selection)]="selectedProjects"
+  [rowHover]="true"
+  dataKey="id"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [showCurrentPageReport]="true"
+  styleClass="p-datatable-responsive-demo"
+>
+      <ng-template pTemplate="header">
+          <tr>
+              <th style="width: 3rem">
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+              <th style="width: 3rem"></th>
+              <th pSortableColumn="name"> Project Name <p-sortIcon field="name"></p-sortIcon></th>
+              <th pSortableColumn="email"> Client <p-sortIcon field="email"></p-sortIcon></th>
+              <th pSortableColumn="matFisc"> Start Date <p-sortIcon field="matFisc"></p-sortIcon></th>
+              <th pSortableColumn="address"> Status <p-sortIcon field="address"></p-sortIcon></th>
+              <th pSortableColumn="fax"> Description <p-sortIcon field="fax"></p-sortIcon></th>
+              <th></th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-project let-expanded="expanded">
+          <tr>
+              <td>
+                  <p-tableCheckbox [value]="project"></p-tableCheckbox>
+              </td>
+              <td>
+                  <button type="button" pButton pRipple [pRowToggler]="project"
+                  class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+              </td>
+
+              <td>{{ project.project_name }}</td>
+              <td>{{ project.client?.client_name  }}</td>
+              <td>{{ project.start_date | date: 'mediumDate'}}</td>
+              <td><p-tag styleClass="p-mr-2" icon="pi {{filterStatus1(project.status).icon }}" class="tags"  [style.background]="filterStatus1(project.status).color" value="{{ filterStatus1(project.status).status_name}}" [rounded]="false" ></p-tag></td>
+              <td>{{ project.description }}</td>
+
+              <td>
+                  <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="selectedProject(project)"></button>
+                  <button pButton pRipple icon="pi pi-info-circle" class="p-button-rounded p-button-secondary p-mr-2"></button>
+
+              </td>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="rowexpansion" let-project>
+          <tr>
+              <td colspan="8">
+                  <div class="p-p-3">
+                    <p-table [value]="project.paper" dataKey="id">
+                      <ng-template pTemplate="header">
+                          <tr>
+                              <th pSortableColumn="id">Paper name<p-sortIcon field="price"></p-sortIcon></th>
+                              <th pSortableColumn="customer">Type <p-sortIcon field="customer"></p-sortIcon></th>
+                              <th pSortableColumn="date">Description <p-sortIcon field="date"></p-sortIcon></th>
+                              <th pSortableColumn="amount">Status <p-sortIcon field="amount"></p-sortIcon></th>
+                              <th style="width:8rem"><button pButton pRipple type="button" icon="pi pi-plus"
+                                class="p-button-rounded p-button-text" (click)="addPaperModal(project.id)"></button></th>
+
+                          </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-paper>
+                          <tr>
+                              <td>{{paper.paper_name}}</td>
+                              <td>{{paper.paper_type}}</td>
+                              <td>{{paper.description}}</td>
+                              <td><p-tag styleClass="p-mr-2" icon="pi {{filterStatus2(paper.status).icon }}" class="tags"  [style.background]="filterStatus2(paper.status).color" value="{{ filterStatus2(project.status).status_name}}" [rounded]="false" ></p-tag></td>
+
+
+                          </tr>
+                      </ng-template>
+                      <ng-template pTemplate="emptymessage">
+                          <tr>
+                              <td colspan="6">There are no order for this product yet.</td>
+                          </tr>
+                      </ng-template>
+                  </p-table>
+                  </div>
+              </td>
+          </tr>
+      </ng-template>
+  </p-table>
+</div>
+
+<!-- New project modal-->
+<p-dialog header="Add new Project" [(visible)]="addNewProjectModal" [modal]="true"[style]="{ width: '150vh','height':'150vh' }"[baseZIndex]="10000"
+  [draggable]="false"  [resizable]="false" styleClass="p-fluid">
+  <div class="p-fluid">
+    <img class="center" src="assets/img/add_person_user_icon_131752.ico" />
+    <br />
+
+    <form [formGroup]="projectForm" >
+      <div class="p-grid p-fluid">
+
+        <div class="p-field p-col-6 ">
+          <label for="icon">Project Name</label>
+          <input id="project_name" type="text" pInputText class="brad" formControlName="project_name">
+          <div *ngIf="project_name.touched && project_name.invalid">
+            <small *ngIf="project_name.errors.required"class="text-danger">Name is required <br> </small>
+            <small  *ngIf="project_name.errors.pattern" class="text-danger">Invalid name <br></small>
+            <small *ngIf="project_name.errors.minlength" class="text-danger">Name must contain 4 characters at least<br></small>
+            <small *ngIf="project_name.errors.maxlength" class="text-danger">Name must contain max 20 characters</small>
+          </div>
+        </div>
+        <div class="p-field p-col-6 ">
+
+          <label for="client_id"> Client :</label>
+          <select class="form-select" aria-label="Default select example" formControlName="client_id">
+              <option *ngFor="let client of clients" value="{{ client.id }}">{{ client.client_name }}</option>
+          </select>
+          <div *ngIf="client_id.touched && client_id.invalid">
+            <small *ngIf="client_id.errors.required"class="text-danger">Client is required <br> </small>
+          </div>
+        </div>
+
+      </div>
+
+
+    <div class="p-grid p-fluid">
+      <div class="p-field p-col-6 ">
+        <label for="icon">Start Date</label>
+          <input id="start_date" type="date" pInputText class="brad" formControlName="start_date">
+        <div *ngIf="start_date.touched && start_date.invalid">
+          <small *ngIf="start_date.errors.required"class="text-danger">Start date is required <br> </small>
+        </div>
+              <!-- <p-calendar  [showIcon]="true" inputId="icon"formControlName="start_date"dateFormat="dd.mm.yy"></p-calendar> -->
+
+      </div>
+      <div class="p-field p-col-6 ">
+        <label for="status"> Status :</label>
+        <select class="form-select" aria-label="Default select example" formControlName="status">
+            <option *ngFor="let status of status_table" value="{{ status.id }}" ><p-tag styleClass="p-mr-2" icon="pi {{status.icon }}"
+              severity="{{ status.color }}" value="{{ status.status_name}}"
+              [rounded]="false" [style]="{'opacity':'0.5'}"></p-tag></option>
+        </select>
+        <div *ngIf="status.touched && status.invalid">
+          <small *ngIf="status.errors.required"class="text-danger">Status is required <br> </small>
+        </div>
+    </div>
+
+    </div>
+
+    <div class="p-grid p-fluid">
+      <div class="p-field p-col-12 ">
+        <span class="p-float-label" >
+          <textarea [rows]="5" [cols]="30" pInputTextarea  formControlName="description" [style]="{'height':'5em'}"></textarea>
+          <label for="description">Description</label>
+        </span>
+            </div>
+            </div>
+
+    </form>
+  </div>
+  <ng-template pTemplate="footer">
+
+    <button type="button"(click)="addNewProjectModal = false" class="btn btn-outline-primary"style="border:none;">Cancel</button>
+    <button type="button"(click)="addProject()"class="btn btn-outline-primary" [disabled]="projectForm.invalid"style="border:none;">Save</button>
+</ng-template>
+</p-dialog>
+
+
+ <!-- update project-->
+<p-dialog header="Update Project" [(visible)]="updateModal" [modal]="true"[style]="{ width: '150vh','height':'100vh' }"[baseZIndex]="10000"
+  [draggable]="false"  [resizable]="false" styleClass="p-fluid">
+  <div class="p-fluid">
+    <img class="center" src="assets/img/add_person_user_icon_131752.ico" />
+    <br />
+
+    <form [formGroup]="projectForm" >
+      <div class="p-grid p-fluid">
+        <div class="p-field p-col-6 ">
+          <label for="project_name">Project Name</label>
+          <input id="project_name" type="text" pInputText class="brad" formControlName="project_name">
+          <div *ngIf="project_name.touched && project_name.invalid">
+            <small *ngIf="project_name.errors.required"class="text-danger">Name is required <br> </small>
+            <small  *ngIf="project_name.errors.pattern" class="text-danger">Invalid name <br></small>
+            <small *ngIf="project_name.errors.minlength" class="text-danger">Name must contain 4 characters at least<br></small>
+            <small *ngIf="project_name.errors.maxlength" class="text-danger">Name must contain max 20 characters</small>
+          </div>
+        </div>
+
+        <div class="p-field p-col-6 ">
+          <label for="client_id"> Client :</label>
+          <select class="form-select" aria-label="Default select example" formControlName="client_id">
+              <option *ngFor="let client of clients" value="{{ client.id }}">{{ client.client_name }}</option>
+          </select>
+          <div *ngIf="client_id.touched && client_id.invalid">
+            <small *ngIf="client_id.errors.required"class="text-danger">Client is required <br> </small>
+          </div>
+        </div>
+
+      </div>
+
+
+    <div class="p-grid p-fluid">
+      <div class="p-field p-col-6 ">
+        <label for="icon">Start Date</label>
+          <input id="start_date" type="date" pInputText class="brad" formControlName="start_date">
+        <div *ngIf="start_date.touched && start_date.invalid">
+          <small *ngIf="start_date.errors.required"class="text-danger">Start date is required <br> </small>
+        </div>
+              <!-- <p-calendar  [showIcon]="true" inputId="icon"formControlName="start_date"dateFormat="dd.mm.yy"></p-calendar> -->
+
+      </div>
+      <div class="p-field p-col-6 ">
+        <label for="status"> Status :</label>
+        <select class="form-select" aria-label="Default select example" formControlName="status">
+            <option *ngFor="let status of status_table" value="{{ status.id }}" ><p-tag styleClass="p-mr-2" icon="pi {{status.icon }}"
+              severity="{{ status.color }}" value="{{ status.status_name}}"
+              [rounded]="false" [style]="{'opacity':'0.5'}"></p-tag></option>
+        </select>
+        <div *ngIf="status.touched && status.invalid">
+          <small *ngIf="status.errors.required"class="text-danger">Status is required <br> </small>
+        </div>
+    </div>
+
+    </div>
+
+    <div class="p-grid p-fluid">
+      <div class="p-field p-col-6 ">
+        <span class="p-float-label" >
+          <textarea rows="5" cols="30" pInputTextarea formControlName="description"></textarea>
+          <label for="description">Description</label>
+        </span>
+            </div>
+            </div>
+
+    </form>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button type="button"(click)="updateModal = false" class="btn btn-outline-primary"style="border:none;">Cancel</button>
+    <button type="button"(click)="updateProject()"class="btn btn-outline-primary" [disabled]="projectForm.invalid"style="border:none;">Save</button>
+</ng-template>
+</p-dialog>
+
+
+
+
+
+<!-- add new paper component-->
+<app-add-paper [addNewPaperModal]="addNewPaperModal" (hideModal)="hideModal()" (updatePage)="updatePage()"></app-add-paper>
+
+
+
+
+
